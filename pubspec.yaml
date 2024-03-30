@@ -1,0 +1,31 @@
+name: c3_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  firebase_core: ^2.27.2
+  firebase_auth: ^4.18.0
+  cloud_firestore: ^4.15.10
+  firebase_storage: ^11.6.11
+  dash_chat_2: ^0.0.20
+  firebase_analytics: ^10.9.0
+  google_fonts: ^6.2.1
+  delightful_toast: ^1.1.0
+  get_it: ^7.6.7
+  image_picker: ^1.0.7
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
