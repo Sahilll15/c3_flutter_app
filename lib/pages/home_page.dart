@@ -1,4 +1,5 @@
 import 'package:c3_app/models/user_profile.dart';
+import 'package:c3_app/pages/chat_page.dart';
 import 'package:c3_app/services/auth_service.auth.dart';
 import 'package:c3_app/services/database_service.dart';
 import 'package:c3_app/services/navigation.service.dart';
@@ -86,24 +87,41 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
-    print(snapshot.data);
+        print(snapshot.data);
         if (snapshot.hasData && snapshot.data != null) {
-          final users=snapshot.data!.docs;
-          return ListView.builder(itemCount: users.length,itemBuilder: (context,index){
-            UserProfile user=users[index].data();
-            return Padding(
-              
-              padding: const EdgeInsets.all(8.0),
-              child: ChatTile(userProfile: user, onTap: (){}),
-            );
-          });
+          final users = snapshot.data!.docs;
+          return ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                UserProfile user = users[index].data();
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ChatTile(
+                      userProfile: user,
+                      onTap: () async {
+                        final chatExists = await _databaseService
+                            .checkChatExists(_authService.user!.uid, user.uid!);
+
+                           if(!chatExists){
+                            await _databaseService.createChat(
+                              _authService.user!.uid,
+                              user.uid!);
+                           }
+
+                           _navigationService.push(MaterialPageRoute(builder: (context){
+                              return ChatPage(chatUser: user);
+                           }));
+                      }
+                      ),
+                    
+
+                );
+              });
         }
 
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-      
-    
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

@@ -25,4 +25,18 @@ class StorageService{
       return null;
     }
   }
+
+  Future<String?> uploadChatImage(
+    File file,
+    String chatID
+  ) async {
+    try{
+      final ref = _storage.ref('chats/$chatID').child('image${p.extension(file.path)}');
+      await ref.putFile(file);
+      return await ref.getDownloadURL();
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
 }

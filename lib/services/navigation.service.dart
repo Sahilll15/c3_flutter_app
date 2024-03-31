@@ -1,6 +1,7 @@
 import 'package:c3_app/pages/home_page.dart';
 import 'package:c3_app/pages/login_page.dart';
 import 'package:c3_app/pages/register_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class NavigationService{
@@ -11,7 +12,7 @@ class NavigationService{
     "/login":(context)=>LoginPage(),
     '/home':(context)=>HomePage(),
     '/register':(context)=>RegisterPage(),
-    
+
   };
 
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
@@ -26,6 +27,10 @@ class NavigationService{
 
   void pushNamed(String routeName){
     _navigatorKey.currentState!.pushNamed(routeName);
+  }
+
+  void push(MaterialPageRoute routeName){
+    _navigatorKey.currentState!.push(routeName);
   }
 
   void goback(){
