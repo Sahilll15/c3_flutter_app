@@ -1,6 +1,7 @@
 import 'package:c3_app/pages/forum_page.dart';
 import 'package:c3_app/pages/home_page.dart';
 import 'package:c3_app/pages/login_page.dart';
+import 'package:c3_app/pages/profile_page.dart';
 import 'package:c3_app/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,6 +15,7 @@ class NavigationService{
     '/home':(context)=>ForumPage(),
     '/register':(context)=>RegisterPage(),
     '/chatlist':(context)=>HomePage(),
+    '/profile':(context)=>ProfilePage(),
   };
 
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;

@@ -127,6 +127,13 @@ Future<void> createChat(String uid1,String uid2)async{
     }
 
 
+  Stream<QuerySnapshot> getForumPostsByUserId() {
+    return _firestore
+        .collection('forum')
+        .where('user', isEqualTo: _authService.user!.uid)
+        .snapshots();
+  }
+  
     Future<void> deleteForum(String id)async{
       try {
         await _firestore.collection('forum').doc(id).delete();
@@ -145,6 +152,6 @@ Future<void> createChat(String uid1,String uid2)async{
       }
     }
 
-    
+   
 
 }

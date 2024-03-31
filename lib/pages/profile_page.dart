@@ -1,183 +1,160 @@
 import 'package:c3_app/models/user_profile.dart';
-import 'package:c3_app/pages/home_page.dart';
-import 'package:c3_app/pages/profile_page.dart';
 import 'package:c3_app/services/alert_service.dart';
 import 'package:c3_app/services/auth_service.auth.dart';
 import 'package:c3_app/services/database_service.dart';
 import 'package:c3_app/services/navigation.service.dart';
-import 'package:c3_app/widgets/custom_form_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 
-class ForumPage extends StatefulWidget {
-  const ForumPage({Key? key}) : super(key: key);
+
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<ForumPage> createState() => _ForumPageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class ForumText {
-  String user;
-  String title;
-  String description;
-  String dateTime; // Date and time property
+class _ProfilePageState extends State<ProfilePage> {
 
-  ForumText({
-    required this.user,
-    required this.title,
-    required this.description,
-    required this.dateTime,
-  });
-}
 
-class _ForumPageState extends State<ForumPage> {
   final GetIt getIt = GetIt.instance;
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<ForumText> forumPosts = [];
-  late DatabaseService _databaseService;
   late AuthService _authService;
-  late AlertService _alertService;
   late NavigationService _navigationService;
-
-  String? title, description;
+  late AlertService _alertService;
+  late DatabaseService  _databaseService;
 
   @override
   void initState() {
     super.initState();
     _authService = getIt.get<AuthService>();
-    _databaseService = getIt.get<DatabaseService>();
-    _alertService = getIt.get<AlertService>();
     _navigationService = getIt.get<NavigationService>();
+    _alertService = getIt.get<AlertService>();
+    _databaseService = getIt.get<DatabaseService>();
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Forum"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // _authService.signOut();
-            },
-            icon: const Icon(Icons.logout),
-          ),
-
-          IconButton(
-            onPressed: () {
-              _navigationService.push(MaterialPageRoute(builder: (context){
-                              return ProfilePage();
-                           }));
-            },  
-            icon: const Icon(Icons.person),
-          ),
-
-          IconButton(
-            onPressed: () {
-                  _navigationService.push(MaterialPageRoute(builder: (context){
-                              return HomePage();
-                           }));
-            },
-            icon: const Icon(Icons.message),
-          ),
+       resizeToAvoidBottomInset: false,
+       appBar: AppBar(
+        title: const Text("Profile"),
         
-        ],
-
       ),
       body: _buildUI(),
+      
     );
   }
+  
 
-  Widget _buildUI() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+
+Widget _buildUI(){
+  return SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          forumForm(),
+          
+         
+          const SizedBox(height: 20),
+          _userProfile(),
+          const SizedBox(height: 20),
+          const Text(
+            'Forum Posts',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: _forumPosts(),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget forumForm() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              CustomFormField(
-                hintText: 'title',
-                placeholderText: 'Enter the title',
-                onSaved: (value) {
-                  setState(() {
-                    title = value;
-                  });
-                },
-              ),
-
-              CustomFormField(
-                hintText: 'description',
-                placeholderText: 'Enter the description',
-                onSaved: (value) {
-                  setState(() {
-                    description = value;
-                  });
-                },
-              ),
-             ElevatedButton(
-  onPressed: () async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      // Call the createForum method
-      bool success = await _databaseService.createForum(_authService.user!.uid, title!, description!);
-      print(success);
-      if (success) {
-        // Show success alert
-        _alertService.showToast(
-          text: "Forum created successfully",
-          icon: Icons.check,
-        );
-      } else {
-        // Show error alert if forum creation fails
-        _alertService.showToast(
-          text: "Error creating forum",
-          icon: Icons.error,
+Widget _userProfile(){
+  return FutureBuilder<UserProfile>(
+    future: _databaseService.getUserProfile(_authService.user!.uid),
+    builder: (context, snapshot){
+      if(snapshot.connectionState == ConnectionState.waiting){
+        return Center(
+          child: CircularProgressIndicator(),
         );
       }
-    }
-  },
-  child: const Text("Post"),
-),
-
+      if(snapshot.hasError){
+        return Center(
+          child: Text('An error occurred'),
+        );
+      }
+      
+      // Accessing the UserProfile object directly from the snapshot
+      UserProfile userProfile = snapshot.data!;
+      
+      // Print the data from the UserProfile object
+      print('User profile data: ${userProfile.toJson()}');
+ 
+      
+      return Column(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            // Set the background image here if available
+            backgroundImage: NetworkImage(userProfile.pfpURL!),
+            
+          ),
+          SizedBox(height: 20),
+          Text(
+           userProfile.name!,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildContactInfo(Icons.email,'${userProfile.name}@gmail.com'),
             ],
           ),
-        ),
-      ),
+          SizedBox(height: 20),
+          
+        ],
+      );
+    },
+  );
+}
+
+
+  Widget _buildContactInfo(IconData icon, String text){
+    return Row(
+      children: [
+        Icon(icon),
+        const SizedBox(width: 10),
+        Text(text),
+      ],
     );
   }
 
-
-StreamBuilder _forumPosts() {
+  StreamBuilder _forumPosts() {
   return StreamBuilder(
-    stream: _databaseService.getForum(),
+    stream: _databaseService.getForumPostsByUserId(),
     builder: (context, snapshot) {
       if (snapshot.hasError) {
         return Center(
@@ -259,4 +236,5 @@ final formattedDateTime = DateFormat.yMMMd().add_jm().format(forumDateTime);
   );
 }
 
+  
 }

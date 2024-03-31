@@ -13,17 +13,20 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        onTap();
-      },
-      dense: false,
-      leading: CircleAvatar(
-        backgroundImage: userProfile.pfpURL != null
-            ? NetworkImage(userProfile.pfpURL!)
-            : null,
+    return Container(
+      color: Color.fromARGB(255, 255, 244, 244), // Set the desired background color here
+      child: ListTile(
+        onTap: () {
+          onTap();
+        },
+        dense: false,
+        leading: CircleAvatar(
+          backgroundImage: userProfile.pfpURL != null
+              ? NetworkImage(userProfile.pfpURL!)
+              : null,
+        ),
+        title: Text(userProfile.name ?? ''),
       ),
-      title: Text(userProfile.name ?? ''),
     );
   }
 }
