@@ -6,12 +6,9 @@ class MediaService{
 
   final ImagePicker _picker=ImagePicker();
 
-
-
   MediaService(){
 
   }
-
 
   Future<File?>  getImageGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);

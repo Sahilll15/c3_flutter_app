@@ -104,4 +104,47 @@ Future<void> createChat(String uid1,String uid2)async{
       return _chatCollection!.doc(ChatId).snapshots() as Stream<DocumentSnapshot<Chat>>;
     }
 
+
+    Future<bool> createForum(String uid, String title, String description) async {
+      try {
+        await _firestore.collection('forum').add({
+          'user': uid,
+          'title': title,
+          'description': description,
+          'dateTime': DateTime.now(),
+        });
+
+        return true;
+      } catch (e) {
+        rethrow;
+      }
+
+
+    }
+
+    Stream<QuerySnapshot> getForum(){
+      return _firestore.collection('forum').snapshots();
+    }
+
+
+    Future<void> deleteForum(String id)async{
+      try {
+        await _firestore.collection('forum').doc(id).delete();
+      } catch (e) {
+        rethrow;
+      }
+    }
+
+
+    Future<UserProfile> getUserProfile(String uid)async{
+      try {
+        final result=await _usersCollection!.doc(uid).get();
+        return result.data()!;
+      } catch (e) {
+        rethrow;
+      }
+    }
+
+    
+
 }

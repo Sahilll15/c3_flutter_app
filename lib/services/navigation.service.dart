@@ -1,3 +1,4 @@
+import 'package:c3_app/pages/forum_page.dart';
 import 'package:c3_app/pages/home_page.dart';
 import 'package:c3_app/pages/login_page.dart';
 import 'package:c3_app/pages/register_page.dart';
@@ -10,9 +11,9 @@ class NavigationService{
 
   final Map<String,Widget Function(BuildContext)> _routes = {
     "/login":(context)=>LoginPage(),
-    '/home':(context)=>HomePage(),
+    '/home':(context)=>ForumPage(),
     '/register':(context)=>RegisterPage(),
-
+    '/chatlist':(context)=>HomePage(),
   };
 
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;

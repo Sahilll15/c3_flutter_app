@@ -39,4 +39,19 @@ class StorageService{
       return null;
     }
   }
+
+
+  Future<String?> uploadForumFile(
+    File file,
+  ) async {
+    try{
+      final ref = _storage.ref('Forum').child('file${p.extension(file.path)}');
+      await ref.putFile(file);
+      return await ref.getDownloadURL();
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
 }
